@@ -1,0 +1,3187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bio Surgeon — Campanha</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    min-height:100vh;
+    color:white;
+
+    background:
+        radial-gradient(circle at 50% 0%,#173f60,#06101c 70%);
+}
+
+button{
+    font-family:inherit;
+}
+
+.screen{
+    display:none;
+    min-height:100vh;
+}
+
+.screen.active{
+    display:block;
+}
+
+
+/* =========================
+   MENU
+========================= */
+
+#menu{
+    padding:35px 20px;
+}
+
+.logo{
+    text-align:center;
+    font-size:clamp(45px,8vw,85px);
+    font-weight:1000;
+    letter-spacing:-5px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #49eaff,
+            white,
+            #a36cff
+        );
+
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.subtitle{
+    text-align:center;
+    color:#8faabd;
+    margin-top:5px;
+}
+
+.campaign{
+    max-width:1100px;
+    margin:35px auto;
+}
+
+.campaignTitle{
+    text-align:center;
+    font-size:27px;
+    margin-bottom:25px;
+}
+
+.levelGrid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:14px;
+}
+
+.levelCard{
+    position:relative;
+
+    min-height:185px;
+
+    padding:20px;
+
+    border-radius:22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #102940,
+            #081522
+        );
+
+    border:1px solid #ffffff12;
+
+    transition:.25s;
+}
+
+.levelCard.unlocked{
+    cursor:pointer;
+}
+
+.levelCard.unlocked:hover{
+    transform:translateY(-7px);
+    border-color:#4de8ff66;
+    box-shadow:0 20px 50px #0008;
+}
+
+.levelCard.locked{
+    opacity:.35;
+    filter:grayscale(.8);
+}
+
+.levelNumber{
+    color:#4de8ff;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.levelIcon{
+    font-size:42px;
+    margin:12px 0;
+}
+
+.levelCard h3{
+    font-size:17px;
+}
+
+.levelCard p{
+    color:#718ba0;
+    font-size:11px;
+    margin-top:7px;
+    line-height:1.5;
+}
+
+.stars{
+    color:#ffd75a;
+    margin-top:12px;
+}
+
+@media(max-width:850px){
+
+    .levelGrid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:500px){
+
+    .levelGrid{
+        grid-template-columns:1fr;
+    }
+}
+
+
+/* =========================
+   JOGO
+========================= */
+
+#game{
+    padding:10px;
+}
+
+.header{
+    max-width:1500px;
+    margin:auto;
+
+    min-height:70px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:15px;
+
+    padding:10px 15px;
+
+    background:#071625ed;
+
+    border:1px solid #ffffff12;
+
+    border-radius:18px;
+}
+
+.brand{
+    color:#4de8ff;
+    font-weight:1000;
+}
+
+.levelInfo{
+    text-align:center;
+}
+
+.levelInfo strong{
+    display:block;
+    color:#fff;
+}
+
+.levelInfo small{
+    color:#7690a3;
+}
+
+.stats{
+    display:flex;
+    gap:8px;
+}
+
+.stat{
+    background:#ffffff08;
+    padding:8px 12px;
+    border-radius:11px;
+    text-align:center;
+    min-width:65px;
+}
+
+.stat small{
+    display:block;
+    color:#647e92;
+    font-size:9px;
+}
+
+#score{
+    color:#ffd75a;
+}
+
+#timer{
+    color:#ff7c8f;
+}
+
+#combo{
+    color:#ff68bd;
+}
+
+
+/* =========================
+   LAYOUT
+========================= */
+
+.layout{
+    max-width:1500px;
+    margin:10px auto;
+
+    display:grid;
+
+    grid-template-columns:210px 1fr 270px;
+
+    gap:10px;
+}
+
+.panel{
+    background:#091827eF;
+    border:1px solid #ffffff12;
+    border-radius:18px;
+    padding:14px;
+}
+
+.panelTitle{
+    color:#7891a5;
+    font-size:11px;
+    letter-spacing:1px;
+    margin-bottom:12px;
+}
+
+
+/* =========================
+   FERRAMENTAS
+========================= */
+
+.tool{
+    width:100%;
+
+    display:flex;
+    align-items:center;
+
+    gap:9px;
+
+    padding:12px;
+
+    margin-bottom:8px;
+
+    background:#ffffff07;
+
+    border:1px solid #ffffff0d;
+
+    color:white;
+
+    border-radius:13px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.tool:hover{
+    background:#ffffff12;
+    transform:translateX(3px);
+}
+
+.tool.active{
+    border-color:#4de8ff;
+    background:#4de8ff15;
+    box-shadow:0 0 20px #4de8ff12;
+}
+
+.toolIcon{
+    font-size:28px;
+}
+
+.tool small{
+    display:block;
+    color:#688297;
+    margin-top:2px;
+    font-size:9px;
+}
+
+
+/* =========================
+   SALA
+========================= */
+
+.room{
+
+    position:relative;
+
+    min-height:700px;
+
+    overflow:hidden;
+
+    border-radius:25px;
+
+    background:
+
+        radial-gradient(
+            circle at 50% 5%,
+            #ffffff13,
+            transparent 28%
+        ),
+
+        linear-gradient(
+            150deg,
+            #183d52,
+            #071520
+        );
+
+    border:1px solid #ffffff18;
+
+    box-shadow:
+        inset 0 0 100px #0007,
+        0 20px 60px #0008;
+}
+
+.light{
+    position:absolute;
+
+    top:-80px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:300px;
+    height:190px;
+
+    border-radius:50%;
+
+    background:#dfffff0a;
+
+    box-shadow:0 0 130px #bfffff22;
+}
+
+.floor{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:130px;
+
+    background:
+        linear-gradient(
+            #0b2635,
+            #06131d
+        );
+}
+
+
+/* =========================
+   MONITOR
+========================= */
+
+.monitor{
+    position:absolute;
+
+    left:22px;
+    top:22px;
+
+    width:205px;
+
+    padding:9px;
+
+    border:7px solid #263a46;
+
+    border-radius:13px;
+
+    background:#030a10;
+
+    z-index:30;
+
+    box-shadow:0 15px 30px #0009;
+}
+
+.ecg{
+    height:55px;
+    overflow:hidden;
+    background:#02070b;
+}
+
+.ecgLine{
+    width:200%;
+    height:100%;
+
+    background:
+        linear-gradient(
+            135deg,
+            transparent 47%,
+            #51f29b 48%,
+            #51f29b 49%,
+            transparent 50%
+        );
+
+    background-size:35px 35px;
+
+    animation:ecg 1s linear infinite;
+}
+
+@keyframes ecg{
+    to{
+        transform:translateX(-35px);
+    }
+}
+
+.monitorText{
+    color:#51f29b;
+    font-size:10px;
+    margin-top:5px;
+}
+
+
+/* =========================
+   MESA
+========================= */
+
+.table{
+    position:absolute;
+
+    left:50%;
+    top:210px;
+
+    transform:translateX(-50%);
+
+    width:min(720px,85%);
+    height:410px;
+
+    background:
+        linear-gradient(
+            #d8e8e9,
+            #91abb1
+        );
+
+    border-radius:60px 60px 25px 25px;
+
+    box-shadow:0 35px 70px #000b;
+}
+
+.table::before,
+.table::after{
+
+    content:"";
+
+    position:absolute;
+
+    bottom:-125px;
+
+    width:35px;
+    height:140px;
+
+    background:#425863;
+}
+
+.table::before{
+    left:20%;
+}
+
+.table::after{
+    right:20%;
+}
+
+
+/* =========================
+   PACIENTE
+========================= */
+
+.patient{
+
+    position:absolute;
+
+    width:230px;
+    height:390px;
+
+    left:50%;
+    top:245px;
+
+    transform:translateX(-50%);
+
+    z-index:10;
+}
+
+.head{
+
+    position:absolute;
+
+    width:105px;
+    height:105px;
+
+    left:50%;
+    top:0;
+
+    transform:translateX(-50%);
+
+    border-radius:50%;
+
+    background:#ffd0b8;
+
+    z-index:5;
+
+    box-shadow:
+        inset -10px -5px 12px #c98e83;
+}
+
+.hair{
+
+    position:absolute;
+
+    width:115px;
+    height:60px;
+
+    top:-6px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    border-radius:60px 60px 15px 15px;
+
+    background:#4d332c;
+
+    z-index:6;
+}
+
+.eye{
+    position:absolute;
+
+    top:45px;
+
+    width:8px;
+    height:8px;
+
+    border-radius:50%;
+
+    background:#34242c;
+
+    z-index:7;
+}
+
+.eye.one{
+    left:35px;
+}
+
+.eye.two{
+    right:35px;
+}
+
+.mouth{
+
+    position:absolute;
+
+    top:70px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:23px;
+    height:8px;
+
+    border-bottom:3px solid #a45c67;
+
+    border-radius:50%;
+
+    z-index:7;
+}
+
+.body{
+
+    position:absolute;
+
+    top:80px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:170px;
+    height:295px;
+
+    border-radius:80px 80px 45px 45px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #42bfc8,
+            #78e1df,
+            #42bfc8
+        );
+
+    box-shadow:
+        inset -14px 0 20px #197c86aa;
+}
+
+.arm{
+
+    position:absolute;
+
+    top:125px;
+
+    width:37px;
+    height:185px;
+
+    border-radius:30px;
+
+    background:#ffd0b8;
+
+    z-index:-1;
+}
+
+.arm.left{
+    left:-10px;
+    transform:rotate(12deg);
+}
+
+.arm.right{
+    right:-10px;
+    transform:rotate(-12deg);
+}
+
+.field{
+
+    position:absolute;
+
+    width:205px;
+    height:160px;
+
+    top:110px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    border-radius:40px;
+
+    background:#45aebc;
+
+    border:3px solid #ffffff1f;
+
+    z-index:8;
+}
+
+.target{
+
+    position:absolute;
+
+    width:170px;
+    height:120px;
+
+    top:130px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    border:3px dashed #ffe45a;
+
+    border-radius:35px;
+
+    z-index:20;
+
+    transition:.3s;
+}
+
+.target.active{
+    animation:pulse .7s infinite alternate;
+}
+
+@keyframes pulse{
+    to{
+        box-shadow:0 0 35px #ffe45a66;
+    }
+}
+
+
+/* =========================
+   ORGANELAS
+========================= */
+
+.organelles{
+
+    position:absolute;
+
+    left:50%;
+    top:160px;
+
+    width:130px;
+    height:90px;
+
+    transform:translateX(-50%);
+
+    z-index:25;
+
+    transition:.5s;
+}
+
+.nucleus{
+
+    position:absolute;
+
+    left:42px;
+    top:22px;
+
+    width:48px;
+    height:48px;
+
+    border-radius:50%;
+
+    background:#8f5cff;
+
+    border:5px solid #d1baff;
+
+    box-shadow:0 0 20px #8f5cff88;
+}
+
+.mito{
+
+    position:absolute;
+
+    width:55px;
+    height:32px;
+
+    border-radius:50%;
+
+    background:#ff813f;
+
+    border:4px solid #ffc052;
+}
+
+.mito::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:10px;
+    right:10px;
+    top:12px;
+
+    border-top:3px dashed #9b432c;
+}
+
+.mito.one{
+    left:0;
+    top:10px;
+    transform:rotate(-20deg);
+}
+
+.mito.two{
+    right:0;
+    top:0;
+    transform:rotate(25deg);
+}
+
+.mito.three{
+    right:25px;
+    bottom:-4px;
+    transform:scale(.7);
+}
+
+.golgi{
+
+    position:absolute;
+
+    width:60px;
+    height:35px;
+
+    left:35px;
+    bottom:-15px;
+}
+
+.golgi span{
+
+    display:block;
+
+    width:60px;
+    height:7px;
+
+    margin:3px;
+
+    border-radius:50%;
+
+    background:#ff65b5;
+}
+
+.organelles.removed{
+    opacity:0;
+    transform:
+        translateX(-50%)
+        scale(0)
+        rotate(180deg);
+}
+
+
+/* =========================
+   INSTRUÇÃO
+========================= */
+
+.tip{
+
+    position:absolute;
+
+    top:125px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    background:#06121eec;
+
+    border:1px solid #ffffff20;
+
+    border-radius:30px;
+
+    padding:11px 17px;
+
+    color:#c9dbe7;
+
+    font-size:12px;
+
+    white-space:nowrap;
+
+    z-index:100;
+
+    box-shadow:0 10px 30px #0006;
+}
+
+
+/* =========================
+   PONTOS
+========================= */
+
+.stitch{
+
+    position:absolute;
+
+    width:15px;
+    height:15px;
+
+    background:#ff5773;
+
+    border:2px solid white;
+
+    border-radius:50%;
+
+    transform:translate(-50%,-50%);
+
+    z-index:80;
+
+    animation:pop .2s;
+}
+
+@keyframes pop{
+    from{
+        transform:
+            translate(-50%,-50%)
+            scale(0);
+    }
+    to{
+        transform:
+            translate(-50%,-50%)
+            scale(1);
+    }
+}
+
+
+/* =========================
+   DIREITA
+========================= */
+
+.case{
+    background:#ffffff07;
+    border-radius:13px;
+    padding:13px;
+
+    color:#91aabd;
+
+    font-size:12px;
+
+    line-height:1.6;
+
+    margin-bottom:15px;
+}
+
+.case strong{
+    color:white;
+}
+
+.objective{
+
+    background:#4de8ff0c;
+
+    border:1px solid #4de8ff22;
+
+    border-radius:15px;
+
+    padding:14px;
+
+    font-size:12px;
+
+    color:#a7bdcb;
+
+    line-height:1.5;
+}
+
+.objective strong{
+    color:#4de8ff;
+    display:block;
+    margin-bottom:5px;
+}
+
+.progress{
+    height:8px;
+    background:#ffffff0c;
+    border-radius:20px;
+    margin-top:12px;
+    overflow:hidden;
+}
+
+.bar{
+    height:100%;
+    width:0%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #4de8ff,
+            #9b61ff
+        );
+
+    transition:.3s;
+}
+
+.log{
+    height:250px;
+    overflow:auto;
+
+    color:#6f899d;
+
+    font-size:10px;
+
+    margin-top:12px;
+}
+
+.log div{
+    padding:7px 0;
+    border-bottom:1px solid #ffffff08;
+}
+
+.nextButton{
+
+    width:100%;
+
+    margin-top:15px;
+
+    padding:13px;
+
+    border:0;
+
+    border-radius:13px;
+
+    color:white;
+
+    font-weight:bold;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4de8ff,
+            #875cff
+        );
+
+    cursor:pointer;
+}
+
+.nextButton:disabled{
+    opacity:.3;
+    cursor:not-allowed;
+}
+
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:#000b;
+
+    backdrop-filter:blur(8px);
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:500;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modalBox{
+
+    width:min(560px,90%);
+
+    padding:35px;
+
+    border-radius:28px;
+
+    text-align:center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #112c45,
+            #071521
+        );
+
+    border:1px solid #ffffff20;
+
+    box-shadow:0 30px 100px #000;
+}
+
+.modalIcon{
+    font-size:75px;
+}
+
+.modalBox h1{
+    font-size:35px;
+    color:#4de8ff;
+    margin:10px 0;
+}
+
+.modalBox p{
+    color:#9bb1c0;
+    line-height:1.7;
+    margin:15px 0 25px;
+}
+
+.mainButton{
+    border:0;
+    border-radius:13px;
+
+    padding:14px 25px;
+
+    color:white;
+
+    font-weight:bold;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4de8ff,
+            #8c5cff
+        );
+
+    cursor:pointer;
+}
+
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media(max-width:1050px){
+
+    .layout{
+        grid-template-columns:90px 1fr;
+    }
+
+    .rightPanel{
+        display:none;
+    }
+
+    .tool{
+        justify-content:center;
+    }
+
+    .tool div:not(.toolIcon){
+        display:none;
+    }
+}
+
+@media(max-width:700px){
+
+    .layout{
+        grid-template-columns:1fr;
+    }
+
+    .toolsPanel{
+        display:flex;
+        gap:7px;
+        overflow:auto;
+    }
+
+    .panelTitle{
+        display:none;
+    }
+
+    .tool{
+        min-width:70px;
+        margin:0;
+    }
+
+    .room{
+        min-height:650px;
+    }
+
+    .stats{
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+
+    .header{
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     MENU DE NÍVEIS
+===================================================== -->
+
+<section id="menu" class="screen active">
+
+    <div class="logo">
+        🧬 BIO SURGEON
+    </div>
+
+    <p class="subtitle">
+        Academia de Cirurgia Celular
+    </p>
+
+
+    <div class="campaign">
+
+        <h2 class="campaignTitle">
+            🏥 CAMPANHA CIRÚRGICA
+        </h2>
+
+        <div
+            class="levelGrid"
+            id="levelGrid"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     JOGO
+===================================================== -->
+
+<section id="game" class="screen">
+
+
+<header class="header">
+
+    <div class="brand">
+        🧬 BIO SURGEON
+    </div>
+
+    <div class="levelInfo">
+
+        <strong id="levelName">
+            Nível 1
+        </strong>
+
+        <small id="difficulty">
+            Fácil
+        </small>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat">
+
+            <small>PONTOS</small>
+
+            <strong id="score">
+                0000
+            </strong>
+
+        </div>
+
+        <div class="stat">
+
+            <small>TEMPO</small>
+
+            <strong id="timer">
+                60
+            </strong>
+
+        </div>
+
+        <div class="stat">
+
+            <small>COMBO</small>
+
+            <strong id="combo">
+                x0
+            </strong>
+
+        </div>
+
+        <div class="stat">
+
+            <small>VIDAS</small>
+
+            <strong id="lives">
+                ❤️❤️❤️
+            </strong>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<div class="layout">
+
+
+<!-- =====================================================
+     FERRAMENTAS
+===================================================== -->
+
+<aside class="panel toolsPanel">
+
+    <div class="panelTitle">
+        🧰 INSTRUMENTOS
+    </div>
+
+
+    <button
+        class="tool"
+        data-tool="anesthesia"
+        onclick="selectTool('anesthesia')"
+    >
+
+        <span class="toolIcon">
+            💉
+        </span>
+
+        <div>
+            <strong>Anestesia</strong>
+            <small>Preparar</small>
+        </div>
+
+    </button>
+
+
+    <button
+        class="tool"
+        data-tool="scalpel"
+        onclick="selectTool('scalpel')"
+    >
+
+        <span class="toolIcon">
+            🔪
+        </span>
+
+        <div>
+            <strong>Bisturi</strong>
+            <small>Incisão</small>
+        </div>
+
+    </button>
+
+
+    <button
+        class="tool"
+        data-tool="forceps"
+        onclick="selectTool('forceps')"
+    >
+
+        <span class="toolIcon">
+            🧲
+        </span>
+
+        <div>
+            <strong>Pinça</strong>
+            <small>Remover</small>
+        </div>
+
+    </button>
+
+
+    <button
+        class="tool"
+        data-tool="suture"
+        onclick="selectTool('suture')"
+    >
+
+        <span class="toolIcon">
+            🧵
+        </span>
+
+        <div>
+            <strong>Sutura</strong>
+            <small>Fechar</small>
+        </div>
+
+    </button>
+
+
+    <button
+        class="tool"
+        data-tool="microscope"
+        onclick="selectTool('microscope')"
+    >
+
+        <span class="toolIcon">
+            🔬
+        </span>
+
+        <div>
+            <strong>Microscópio</strong>
+            <small>Examinar</small>
+        </div>
+
+    </button>
+
+</aside>
+
+
+<!-- =====================================================
+     SALA
+===================================================== -->
+
+<main class="room" id="room">
+
+    <div class="light"></div>
+
+    <div class="floor"></div>
+
+
+    <!-- MONITOR -->
+
+    <div class="monitor">
+
+        <div class="ecg">
+
+            <div class="ecgLine"></div>
+
+        </div>
+
+        <div class="monitorText">
+            ❤️ <span id="bpm">78</span> BPM
+        </div>
+
+    </div>
+
+
+    <div class="tip" id="tip">
+        Escolha um instrumento.
+    </div>
+
+
+    <!-- MESA -->
+
+    <div class="table"></div>
+
+
+    <!-- PACIENTE -->
+
+    <div class="patient">
+
+
+        <div class="head">
+
+            <div class="hair"></div>
+
+            <div class="eye one"></div>
+
+            <div class="eye two"></div>
+
+            <div class="mouth"></div>
+
+        </div>
+
+
+        <div class="body"></div>
+
+
+        <div class="arm left"></div>
+
+        <div class="arm right"></div>
+
+
+        <div class="field"></div>
+
+
+        <div
+            class="target"
+            id="target"
+        ></div>
+
+
+        <!-- ORGANELAS -->
+
+        <div
+            class="organelles"
+            id="organelles"
+        >
+
+            <div class="nucleus"></div>
+
+            <div class="mito one"></div>
+
+            <div class="mito two"></div>
+
+            <div class="mito three"></div>
+
+            <div class="golgi">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- =====================================================
+     PAINEL DIREITO
+===================================================== -->
+
+<aside class="panel rightPanel">
+
+    <div class="panelTitle">
+        📋 PRONTUÁRIO
+    </div>
+
+    <div class="case">
+
+        <strong id="patientName">
+            Paciente
+        </strong>
+
+        <br>
+
+        <span id="patientCondition">
+            ---
+        </span>
+
+        <br><br>
+
+        <span id="caseDescription">
+            ---
+        </span>
+
+    </div>
+
+
+    <div class="panelTitle">
+        🎯 OBJETIVO
+    </div>
+
+    <div class="objective">
+
+        <strong id="objectiveTitle">
+            ---
+        </strong>
+
+        <span id="objectiveText">
+            ---
+        </span>
+
+
+        <div class="progress">
+
+            <div
+                class="bar"
+                id="progressBar"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="panelTitle"
+        style="margin-top:18px"
+    >
+        📜 REGISTRO
+    </div>
+
+
+    <div
+        class="log"
+        id="log"
+    ></div>
+
+
+    <button
+        class="nextButton"
+        id="nextButton"
+        onclick="nextLevel()"
+        disabled
+    >
+        🔒 Nível ainda não concluído
+    </button>
+
+</aside>
+
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     MODAL
+===================================================== -->
+
+<div
+    class="modal"
+    id="modal"
+>
+
+    <div class="modalBox">
+
+        <div
+            class="modalIcon"
+            id="modalIcon"
+        >
+            🏆
+        </div>
+
+        <h1 id="modalTitle">
+            Nível concluído!
+        </h1>
+
+        <p id="modalText">
+            ---
+        </p>
+
+        <button
+            class="mainButton"
+            onclick="closeModal()"
+        >
+            Continuar
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   NÍVEIS
+========================================================= */
+
+const levels = [
+
+{
+    name:"Primeiros Passos",
+    difficulty:"Fácil",
+    time:70,
+    lives:3,
+    icon:"🩺",
+
+    patient:"Marina",
+    avatar:"👩🏻‍🦰",
+
+    condition:"Baixa produção de energia",
+
+    description:
+    "A célula apresenta uma alteração simples nas mitocôndrias.",
+
+    stages:3
+},
+
+{
+    name:"Núcleo Misterioso",
+    difficulty:"Fácil",
+    time:65,
+    lives:3,
+    icon:"🧬",
+
+    patient:"Lucas",
+    avatar:"👦🏽",
+
+    condition:"Alteração no núcleo",
+
+    description:
+    "O material genético apresenta uma alteração que precisa ser investigada.",
+
+    stages:4
+},
+
+{
+    name:"Golgi em Perigo",
+    difficulty:"Normal",
+    time:60,
+    lives:3,
+    icon:"📦",
+
+    patient:"Sofia",
+    avatar:"👩🏼",
+
+    condition:"Problema no complexo de Golgi",
+
+    description:
+    "O transporte de proteínas está comprometido.",
+
+    stages:4
+},
+
+{
+    name:"Célula Sob Pressão",
+    difficulty:"Normal",
+    time:55,
+    lives:3,
+    icon:"🫀",
+
+    patient:"Rafael",
+    avatar:"👨🏽",
+
+    condition:"Metabolismo celular alterado",
+
+    description:
+    "Diversas estruturas estão apresentando funcionamento irregular.",
+
+    stages:5
+},
+
+{
+    name:"Missão Mitocôndria",
+    difficulty:"Difícil",
+    time:50,
+    lives:3,
+    icon:"⚡",
+
+    patient:"Ana",
+    avatar:"👩🏽",
+
+    condition:"Falha na produção de ATP",
+
+    description:
+    "A produção de energia da célula está gravemente comprometida.",
+
+    stages:5
+},
+
+{
+    name:"Código Genético",
+    difficulty:"Difícil",
+    time:48,
+    lives:2,
+    icon:"🧬",
+
+    patient:"Pedro",
+    avatar:"👨🏻",
+
+    condition:"Alteração nuclear",
+
+    description:
+    "A região nuclear precisa ser examinada cuidadosamente.",
+
+    stages:5
+},
+
+{
+    name:"Operação Ribossomo",
+    difficulty:"Muito difícil",
+    time:45,
+    lives:2,
+    icon:"🔬",
+
+    patient:"Julia",
+    avatar:"👩🏻",
+
+    condition:"Problema na síntese proteica",
+
+    description:
+    "A produção de proteínas apresenta sinais de interrupção.",
+
+    stages:6
+},
+
+{
+    name:"Caos Celular",
+    difficulty:"Muito difícil",
+    time:42,
+    lives:2,
+    icon:"🧫",
+
+    patient:"Miguel",
+    avatar:"👦🏻",
+
+    condition:"Múltiplas alterações",
+
+    description:
+    "Mais de uma organela apresenta comportamento anormal.",
+
+    stages:6
+},
+
+{
+    name:"Emergência",
+    difficulty:"Extremo",
+    time:38,
+    lives:2,
+    icon:"🚨",
+
+    patient:"Clara",
+    avatar:"👩🏼‍🦱",
+
+    condition:"Colapso celular",
+
+    description:
+    "A célula está entrando em colapso. Cada movimento precisa ser preciso.",
+
+    stages:7
+},
+
+{
+    name:"Mestre Cirurgião",
+    difficulty:"LENDÁRIO",
+    time:35,
+    lives:1,
+    icon:"👑",
+
+    patient:"Gabriel",
+    avatar:"👨🏽‍🦱",
+
+    condition:"Falha celular generalizada",
+
+    description:
+    "O maior desafio. Apenas cirurgiões que dominaram os níveis anteriores conseguem concluir esta operação.",
+
+    stages:8
+}
+
+];
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+let unlocked =
+    Number(
+        localStorage.getItem(
+            "bioSurgeonUnlocked"
+        )
+    ) || 1;
+
+let bestScores =
+    JSON.parse(
+        localStorage.getItem(
+            "bioSurgeonScores"
+        ) || "{}"
+    );
+
+let currentLevel = 0;
+
+let levelData;
+
+let score = 0;
+let combo = 0;
+let lives = 3;
+let time = 60;
+
+let timerInterval;
+
+let stage = 0;
+let progress = 0;
+let stitches = 0;
+
+let selectedTool = null;
+
+
+/* =========================================================
+   ETAPAS
+========================================================= */
+
+const allStages = [
+
+{
+    tool:"anesthesia",
+    title:"💉 Anestesia",
+    text:"Aplique a anestesia na área indicada."
+},
+
+{
+    tool:"scalpel",
+    title:"🔪 Incisão",
+    text:"Faça uma incisão cuidadosa na área marcada."
+},
+
+{
+    tool:"forceps",
+    title:"🧲 Remoção",
+    text:"Use a pinça para remover a estrutura alterada."
+},
+
+{
+    tool:"microscope",
+    title:"🔬 Análise",
+    text:"Analise a célula usando o microscópio."
+},
+
+{
+    tool:"suture",
+    title:"🧵 Sutura",
+    text:"Feche a incisão colocando pontos."
+},
+
+{
+    tool:"microscope",
+    title:"🧬 Diagnóstico final",
+    text:"Faça a análise final da célula."
+},
+
+{
+    tool:"suture",
+    title:"🪡 Sutura avançada",
+    text:"Faça pontos adicionais para concluir o procedimento."
+},
+
+{
+    tool:"microscope",
+    title:"🏆 Avaliação",
+    text:"Confirme que todas as estruturas estão funcionando."
+}
+
+];
+
+
+/* =========================================================
+   ELEMENTOS
+========================================================= */
+
+const menu =
+document.getElementById("menu");
+
+const game =
+document.getElementById("game");
+
+const room =
+document.getElementById("room");
+
+const target =
+document.getElementById("target");
+
+const organelles =
+document.getElementById("organelles");
+
+const modal =
+document.getElementById("modal");
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+function renderLevels(){
+
+    const grid =
+    document.getElementById(
+        "levelGrid"
+    );
+
+    grid.innerHTML="";
+
+
+    levels.forEach(
+        (level,index)=>{
+
+            const number =
+                index+1;
+
+            const isUnlocked =
+                number <= unlocked;
+
+
+            const best =
+                bestScores[number] || 0;
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "levelCard " +
+                (
+                    isUnlocked
+                    ? "unlocked"
+                    : "locked"
+                );
+
+
+            card.innerHTML = `
+
+                <div class="levelNumber">
+                    NÍVEL ${number}
+                </div>
+
+                <div class="levelIcon">
+                    ${level.icon}
+                </div>
+
+                <h3>
+                    ${level.name}
+                </h3>
+
+                <p>
+                    ${level.difficulty}
+                </p>
+
+                <div class="stars">
+                    ${
+                        isUnlocked
+                        ? "⭐".repeat(
+                            best >= 1000
+                            ? 3
+                            : best >= 500
+                            ? 2
+                            : best > 0
+                            ? 1
+                            : 0
+                        )
+                        : "🔒"
+                    }
+                </div>
+
+            `;
+
+
+            if(isUnlocked){
+
+                card.onclick =
+                    () => startLevel(index);
+
+            }
+
+
+            grid.appendChild(card);
+
+        }
+    );
+
+}
+
+
+renderLevels();
+
+
+/* =========================================================
+   COMEÇAR NÍVEL
+========================================================= */
+
+function startLevel(index){
+
+    currentLevel =
+        index;
+
+    levelData =
+        levels[index];
+
+    score=0;
+
+    combo=0;
+
+    lives =
+        levelData.lives;
+
+    time =
+        levelData.time;
+
+    stage=0;
+
+    progress=0;
+
+    stitches=0;
+
+    selectedTool=null;
+
+
+    menu.classList.remove(
+        "active"
+    );
+
+    game.classList.add(
+        "active"
+    );
+
+
+    document.getElementById(
+        "levelName"
+    ).textContent =
+        `Nível ${index+1} — ${levelData.name}`;
+
+
+    document.getElementById(
+        "difficulty"
+    ).textContent =
+        levelData.difficulty;
+
+
+    document.getElementById(
+        "patientName"
+    ).textContent =
+        levelData.avatar +
+        " " +
+        levelData.patient;
+
+
+    document.getElementById(
+        "patientCondition"
+    ).textContent =
+        levelData.condition;
+
+
+    document.getElementById(
+        "caseDescription"
+    ).textContent =
+        levelData.description;
+
+
+    document.getElementById(
+        "log"
+    ).innerHTML =
+        "";
+
+
+    document.getElementById(
+        "nextButton"
+    ).disabled=true;
+
+
+    document.getElementById(
+        "nextButton"
+    ).textContent =
+        "🔒 Complete o nível";
+
+
+    organelles.classList.remove(
+        "removed"
+    );
+
+
+    clearStitches();
+
+    resetTools();
+
+    updateStats();
+
+    updateStage();
+
+    startTimer();
+
+}
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function startTimer(){
+
+    clearInterval(
+        timerInterval
+    );
+
+
+    timerInterval =
+    setInterval(()=>{
+
+        time--;
+
+        document.getElementById(
+            "timer"
+        ).textContent =
+            time;
+
+
+        if(time <= 0){
+
+            clearInterval(
+                timerInterval
+            );
+
+            failLevel(
+                "⏰ O tempo acabou!"
+            );
+
+        }
+
+
+    },1000);
+
+}
+
+
+/* =========================================================
+   FERRAMENTA
+========================================================= */
+
+function selectTool(tool){
+
+    selectedTool =
+        tool;
+
+
+    document
+    .querySelectorAll(
+        ".tool"
+    )
+    .forEach(
+        el =>
+        el.classList.remove(
+            "active"
+        )
+    );
+
+
+    const element =
+        document.querySelector(
+            `[data-tool="${tool}"]`
+        );
+
+
+    if(element)
+        element.classList.add(
+            "active"
+        );
+
+
+    tip.textContent =
+        "🔧 " +
+        toolName(tool) +
+        " selecionado.";
+
+}
+
+
+/* =========================================================
+   NOMES
+========================================================= */
+
+function toolName(tool){
+
+    return {
+
+        anesthesia:"Anestesia",
+
+        scalpel:"Bisturi",
+
+        forceps:"Pinça",
+
+        suture:"Sutura",
+
+        microscope:"Microscópio"
+
+    }[tool];
+
+}
+
+
+/* =========================================================
+   CLIQUE NA SALA
+========================================================= */
+
+room.addEventListener(
+    "pointerdown",
+    event=>{
+
+        if(!selectedTool){
+
+            tip.textContent =
+                "⚠️ Escolha uma ferramenta.";
+
+            return;
+        }
+
+
+        const rect =
+            target.getBoundingClientRect();
+
+
+        const inside =
+            event.clientX >= rect.left &&
+            event.clientX <= rect.right &&
+            event.clientY >= rect.top &&
+            event.clientY <= rect.bottom;
+
+
+        if(!inside){
+
+            wrongMove();
+
+            return;
+
+        }
+
+
+        doAction(
+            event.clientX,
+            event.clientY
+        );
+
+    }
+);
+
+
+/* =========================================================
+   AÇÃO
+========================================================= */
+
+function doAction(x,y){
+
+    const current =
+        allStages[stage];
+
+
+    if(
+        !current ||
+        selectedTool !==
+        current.tool
+    ){
+
+        wrongMove();
+
+        tip.textContent =
+            "❌ Essa não é a ferramenta certa.";
+
+        return;
+
+    }
+
+
+    /* ANESTESIA */
+
+    if(
+        current.tool ===
+        "anesthesia"
+    ){
+
+        progress +=
+            50;
+
+        gain(
+            60
+        );
+
+        effect(
+            "💙"
+        );
+
+
+        if(progress>=100){
+
+            log(
+                "💉 Paciente anestesiado."
+            );
+
+            nextStage();
+
+        }
+
+    }
+
+
+    /* BISTURI */
+
+    else if(
+        current.tool ===
+        "scalpel"
+    ){
+
+        progress +=
+            25;
+
+        gain(
+            70
+        );
+
+        effect(
+            "✨"
+        );
+
+
+        if(progress>=100){
+
+            log(
+                "🔪 Incisão realizada."
+            );
+
+            nextStage();
+
+        }
+
+    }
+
+
+    /* PINÇA */
+
+    else if(
+        current.tool ===
+        "forceps"
+    ){
+
+        organelles.classList.add(
+            "removed"
+        );
+
+        progress=100;
+
+        gain(
+            250
+        );
+
+        effect(
+            "🧬"
+        );
+
+        log(
+            "🧲 Estrutura removida."
+        );
+
+        setTimeout(
+            nextStage,
+            400
+        );
+
+    }
+
+
+    /* MICROSCÓPIO */
+
+    else if(
+        current.tool ===
+        "microscope"
+    ){
+
+        progress +=
+            50;
+
+        gain(
+            100
+        );
+
+        effect(
+            "🔬"
+        );
+
+
+        if(progress>=100){
+
+            log(
+                "🔬 Análise microscópica concluída."
+            );
+
+            nextStage();
+
+        }
+
+    }
+
+
+    /* SUTURA */
+
+    else if(
+        current.tool ===
+        "suture"
+    ){
+
+        stitches++;
+
+        progress =
+            Math.min(
+                100,
+                stitches*20
+            );
+
+        gain(
+            45
+        );
+
+        placeStitch(
+            x,
+            y
+        );
+
+
+        if(
+            stitches >= 5
+        ){
+
+            log(
+                "🧵 Sutura concluída."
+            );
+
+            nextStage();
+
+        }
+
+    }
+
+
+    updateProgress();
+
+    updateStats();
+
+}
+
+
+/* =========================================================
+   PRÓXIMA ETAPA
+========================================================= */
+
+function nextStage(){
+
+    stage++;
+
+    progress=0;
+
+    stitches=0;
+
+    updateProgress();
+
+
+    if(
+        stage >=
+        Math.min(
+            levelData.stages,
+            allStages.length
+        )
+    ){
+
+        finishLevel();
+
+        return;
+
+    }
+
+
+    updateStage();
+
+}
+
+
+/* =========================================================
+   ATUALIZAR ETAPA
+========================================================= */
+
+function updateStage(){
+
+    const current =
+        allStages[stage];
+
+
+    if(!current)
+        return;
+
+
+    document.getElementById(
+        "objectiveTitle"
+    ).textContent =
+        current.title;
+
+
+    document.getElementById(
+        "objectiveText"
+    ).textContent =
+        current.text;
+
+
+    tip.textContent =
+        current.title +
+        " — " +
+        current.text;
+
+
+    log(
+        "➡️ " +
+        current.title
+    );
+
+}
+
+
+/* =========================================================
+   PROGRESSO
+========================================================= */
+
+function updateProgress(){
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+        progress+"%";
+
+}
+
+
+/* =========================================================
+   PONTUAÇÃO
+========================================================= */
+
+function gain(points){
+
+    combo++;
+
+    score +=
+        points +
+        combo*5;
+
+}
+
+
+/* =========================================================
+   ERRO
+========================================================= */
+
+function wrongMove(){
+
+    lives--;
+
+    combo=0;
+
+    updateStats();
+
+    shake();
+
+    log(
+        "⚠️ Movimento incorreto."
+    );
+
+
+    if(
+        lives<=0
+    ){
+
+        failLevel(
+            "💔 Você ficou sem vidas."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function updateStats(){
+
+    document.getElementById(
+        "score"
+    ).textContent =
+        String(score)
+        .padStart(4,"0");
+
+
+    document.getElementById(
+        "combo"
+    ).textContent =
+        "x"+combo;
+
+
+    document.getElementById(
+        "lives"
+    ).textContent =
+        "❤️".repeat(lives) +
+        "🖤".repeat(
+            Math.max(
+                0,
+                3-lives
+            )
+        );
+
+
+    document.getElementById(
+        "timer"
+    ).textContent =
+        time;
+
+}
+
+
+/* =========================================================
+   SUTURA
+========================================================= */
+
+function placeStitch(x,y){
+
+    const rect =
+        target.getBoundingClientRect();
+
+
+    const stitch =
+        document.createElement(
+            "div"
+        );
+
+
+    stitch.className =
+        "stitch";
+
+
+    stitch.style.left =
+        (
+            x -
+            rect.left
+        )+"px";
+
+
+    stitch.style.top =
+        (
+            y -
+            rect.top
+        )+"px";
+
+
+    target.appendChild(
+        stitch
+    );
+
+}
+
+
+function clearStitches(){
+
+    document
+    .querySelectorAll(
+        ".stitch"
+    )
+    .forEach(
+        x=>x.remove()
+    );
+
+}
+
+
+/* =========================================================
+   EFEITOS
+========================================================= */
+
+function effect(icon){
+
+    for(
+        let i=0;
+        i<10;
+        i++
+    ){
+
+        const e =
+            document.createElement(
+                "div"
+            );
+
+        e.textContent =
+            icon;
+
+        e.style.position =
+            "absolute";
+
+        e.style.left =
+            "50%";
+
+        e.style.top =
+            "50%";
+
+        e.style.zIndex =
+            200;
+
+        e.style.fontSize =
+            "20px";
+
+        e.style.pointerEvents =
+            "none";
+
+
+        const x =
+            Math.random()*300-150;
+
+        const y =
+            Math.random()*250-150;
+
+
+        e.animate(
+
+            [
+                {
+                    transform:
+                    "translate(0,0) scale(1)",
+                    opacity:1
+                },
+
+                {
+                    transform:
+                    `translate(${x}px,${y}px) scale(.2)`,
+                    opacity:0
+                }
+
+            ],
+
+            {
+                duration:800
+            }
+
+        );
+
+
+        room.appendChild(e);
+
+
+        setTimeout(
+            ()=>e.remove(),
+            850
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SHAKE
+========================================================= */
+
+function shake(){
+
+    room.animate(
+
+        [
+            {
+                transform:"translateX(0)"
+            },
+
+            {
+                transform:"translateX(-9px)"
+            },
+
+            {
+                transform:"translateX(9px)"
+            },
+
+            {
+                transform:"translateX(-5px)"
+            },
+
+            {
+                transform:"translateX(0)"
+            }
+
+        ],
+
+        {
+            duration:300
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   LOG
+========================================================= */
+
+function log(text){
+
+    const box =
+        document.getElementById(
+            "log"
+        );
+
+
+    const line =
+        document.createElement(
+            "div"
+        );
+
+
+    line.textContent =
+        text;
+
+
+    box.prepend(
+        line
+    );
+
+}
+
+
+/* =========================================================
+   FINALIZAR NÍVEL
+========================================================= */
+
+function finishLevel(){
+
+    clearInterval(
+        timerInterval
+    );
+
+
+    const level =
+        currentLevel+1;
+
+
+    const bonus =
+        time*10;
+
+
+    score +=
+        bonus;
+
+
+    if(
+        score >
+        (bestScores[level] || 0)
+    ){
+
+        bestScores[level] =
+            score;
+
+        localStorage.setItem(
+            "bioSurgeonScores",
+            JSON.stringify(
+                bestScores
+            )
+        );
+
+    }
+
+
+    if(
+        level === unlocked &&
+        unlocked < levels.length
+    ){
+
+        unlocked++;
+
+        localStorage.setItem(
+            "bioSurgeonUnlocked",
+            unlocked
+        );
+
+    }
+
+
+    updateStats();
+
+
+    document.getElementById(
+        "modalIcon"
+    ).textContent =
+        "🏆";
+
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        "Nível concluído!";
+
+
+    document.getElementById(
+        "modalText"
+    ).innerHTML =
+
+        `
+        🎉 Excelente trabalho!
+        <br><br>
+
+        Você completou:
+        <strong>
+        ${levelData.name}
+        </strong>
+
+        <br><br>
+
+        ⭐ Pontuação:
+        <strong>${score}</strong>
+
+        <br>
+
+        🔥 Melhor combo:
+        <strong>x${combo}</strong>
+
+        <br>
+
+        ⏱️ Tempo restante:
+        <strong>${time}s</strong>
+
+        <br><br>
+
+        ${
+            level < levels.length
+            ? "🔓 O próximo nível foi desbloqueado!"
+            : "👑 Você completou toda a campanha!"
+        }
+        `;
+
+
+    document.getElementById(
+        "nextButton"
+    ).disabled=false;
+
+
+    document.getElementById(
+        "nextButton"
+    ).textContent =
+        level < levels.length
+        ? "➡️ Próximo nível"
+        : "🏆 Campanha concluída";
+
+
+    modal.classList.add(
+        "show"
+    );
+
+}
+
+
+/* =========================================================
+   FALHA
+========================================================= */
+
+function failLevel(message){
+
+    clearInterval(
+        timerInterval
+    );
+
+
+    document.getElementById(
+        "modalIcon"
+    ).textContent =
+        "🚨";
+
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        "Cirurgia interrompida";
+
+
+    document.getElementById(
+        "modalText"
+    ).innerHTML =
+
+        `
+        ${message}
+
+        <br><br>
+
+        Pontuação:
+        <strong>${score}</strong>
+
+        <br><br>
+
+        Tente novamente e procure
+        evitar movimentos incorretos.
+        `;
+
+
+    modal.classList.add(
+        "show"
+    );
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function closeModal(){
+
+    modal.classList.remove(
+        "show"
+    );
+
+
+    if(
+        stage >=
+        Math.min(
+            levelData.stages,
+            allStages.length
+        )
+    ){
+
+        nextLevel();
+
+    }
+
+}
+
+
+/* =========================================================
+   PRÓXIMO NÍVEL
+========================================================= */
+
+function nextLevel(){
+
+    modal.classList.remove(
+        "show"
+    );
+
+
+    const next =
+        currentLevel+1;
+
+
+    if(
+        next >= levels.length
+    ){
+
+        game.classList.remove(
+            "active"
+        );
+
+        menu.classList.add(
+            "active"
+        );
+
+        renderLevels();
+
+        return;
+
+    }
+
+
+    if(
+        next+1 <= unlocked
+    ){
+
+        startLevel(next);
+
+    }
+
+    else{
+
+        menu.classList.remove(
+            "active"
+        );
+
+        game.classList.add(
+            "active"
+        );
+
+        startLevel(
+            currentLevel
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RESETAR FERRAMENTAS
+========================================================= */
+
+function resetTools(){
+
+    document
+    .querySelectorAll(
+        ".tool"
+    )
+    .forEach(
+        el =>
+        el.classList.remove(
+            "active"
+        )
+    );
+
+}
+
+
+/* =========================================================
+   VOLTAR AO MENU
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        if(
+            event.key === "Escape"
+        ){
+
+            clearInterval(
+                timerInterval
+            );
+
+            modal.classList.remove(
+                "show"
+            );
+
+            game.classList.remove(
+                "active"
+            );
+
+            menu.classList.add(
+                "active"
+            );
+
+            renderLevels();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   COMEÇA
+========================================================= */
+
+renderLevels();
+
+</script>
+
+</body>
+</html>
